@@ -1,6 +1,10 @@
-const express =require('express')
-const app=express()
+import express from 'express';
+import notesRoutes from './routes/notesRoutes.js'
 
-app.listen(5001,()=>{
-    console.log("Server started on PORT: 5001");
+const app=express()
+const PORT=5001
+
+app.use("/api/notes",notesRoutes);
+app.listen(PORT,()=>{
+    console.log(`Server started on PORT:${PORT}`);
 })
