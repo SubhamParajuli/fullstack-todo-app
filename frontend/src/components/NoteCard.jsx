@@ -1,31 +1,37 @@
 import { PenSquareIcon, Trash2Icon } from "lucide-react";
 import { Link } from "react-router";
 import { formatDate } from "../lib/utils";
-import api from "../lib/axios";
 import toast from "react-hot-toast";
+import axios from "axios";
+
+
 
 const NoteCard = ({ note, setNotes }) => {
-  const handleDelete = async (e, id) => {
-    e.preventDefault(); // get rid of the navigation behaviour
 
-    if (!window.confirm("Are you sure you want to delete this note?")) return;
+  
+const handleDelete = async (e, id) => {
+  e.preventDefault();
+  e.stopPropagation();
 
-    try {
-      await api.delete(`/notes/${id}`);
-      setNotes((prev) => prev.filter((note) => note._id !== id)); // get rid of the deleted one
-      toast.success("Note deleted successfully");
-    } catch (error) {
-      console.log("Error in handleDelete", error);
-      toast.error("Failed to delete note");
-    }
-  };
+  if (!window.confirm("Are you sure you want to delete this note?")) return;
+
+  try {
+    await axios.delete(`http://localhost:5001/api/notes/${id}`);
+
+    setNotes(prev => prev.filter(note => note._id !== id));
+
+    toast.success("Note deleted successfully");
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    toast.error("Failed to delete note");
+  }
+};
 
   return (
     <Link
       to={`/note/${note._id}`}
       className="card bg-base-100 hover:shadow-lg transition-all duration-200 
-      border-t-4 border-solid border-[#00FF9D]"
-    >
+      border-t-4 border-solid border-[#00FF9D]">
       <div className="card-body">
         <h3 className="card-title text-base-content">{note.title}</h3>
         <p className="text-base-content/70 line-clamp-3">{note.content}</p>
